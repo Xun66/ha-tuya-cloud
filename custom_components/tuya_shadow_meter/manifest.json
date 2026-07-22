@@ -1,13 +1,14 @@
 {
   "domain": "tuya_shadow_meter",
-  "name": "Tuya Shadow Meter",
+  "name": "Tuya Cloud",
   "codeowners": [],
   "config_flow": true,
-  "documentation": "https://github.com/tzz/localtuya",
+  "documentation": "https://github.com/Xun66/ha-tuya-cloud",
   "integration_type": "hub",
-  "iot_class": "cloud_poll",
+  "iot_class": "cloud_push",
   "requirements": [
-    "requests"
+    "tuya-device-sharing-sdk==0.2.14",
+    "cryptography"
   ],
   "version": "0.1.0"
 }

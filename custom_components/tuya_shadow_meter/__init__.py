@@ -1,22 +1,26 @@
-"""Tuya cloud polling support for a two-channel electricity meter."""
+"""Tuya sharing MQTT support for selected Tuya devices."""
 
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 
-from .const import DOMAIN, PLATFORMS
-from .coordinator import TuyaMeterCoordinator, TuyaMeterHub
+from .const import CONF_TOKEN_INFO, DOMAIN, PLATFORMS
+from .coordinator import TuyaCloudCoordinator, TuyaCloudHub
 
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> bool:
-    """Set up Tuya shadow meter from a config entry."""
+    """Set up Tuya Cloud from a config entry."""
+    if CONF_TOKEN_INFO not in entry.data:
+        raise ConfigEntryAuthFailed("Tuya QR login is required")
+
     hass.data.setdefault(DOMAIN, {})
-    hub = TuyaMeterHub(hass, entry)
-    coordinator = TuyaMeterCoordinator(hass, hub)
-    await coordinator.async_config_entry_first_refresh()
+    hub = TuyaCloudHub(hass, entry)
+    coordinator = TuyaCloudCoordinator(hass, hub)
+    await coordinator.async_start()
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
@@ -31,7 +35,7 @@ async def async_unload_entry(
     """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        coordinator: TuyaMeterCoordinator = hass.data[DOMAIN].pop(entry.entry_id)
+        coordinator: TuyaCloudCoordinator = hass.data[DOMAIN].pop(entry.entry_id)
         await coordinator.hub.async_unload()
     return unload_ok
 
@@ -40,7 +44,7 @@ async def async_remove_entry(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> None:
     """Remove a config entry."""
-    coordinator: TuyaMeterCoordinator | None = hass.data.get(DOMAIN, {}).get(
+    coordinator: TuyaCloudCoordinator | None = hass.data.get(DOMAIN, {}).get(
         entry.entry_id
     )
     if coordinator is not None:
