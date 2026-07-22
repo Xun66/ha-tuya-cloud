@@ -6,7 +6,11 @@
         "description": "输入智能生活或涂鸦智能 App 中的 User Code。也可以指定目标设备 ID。",
         "data": {
           "user_code": "User Code",
-          "device_id": "设备 ID"
+          "device_id": "设备 ID",
+          "cloud_access_id": "云开发 Access ID",
+          "cloud_access_secret": "云开发 Access Secret",
+          "cloud_app_user_id": "App 用户 ID",
+          "cloud_region": "云开发数据中心"
         }
       },
       "scan": {

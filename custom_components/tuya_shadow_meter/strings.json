@@ -6,7 +6,11 @@
         "description": "Enter the User Code from the Smart Life or Tuya Smart app. Optionally enter the target device ID.",
         "data": {
           "user_code": "User Code",
-          "device_id": "Device ID"
+          "device_id": "Device ID",
+          "cloud_access_id": "Cloud Access ID",
+          "cloud_access_secret": "Cloud Access Secret",
+          "cloud_app_user_id": "Cloud App User ID",
+          "cloud_region": "Cloud Region"
         }
       },
       "scan": {

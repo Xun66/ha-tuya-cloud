@@ -7,11 +7,17 @@ from typing import Any
 from tuya_sharing import LoginControl, Manager
 import voluptuous as vol
 
+from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.core import callback
 from homeassistant.helpers import selector
 
 from .const import (
+    CONF_CLOUD_ACCESS_ID,
+    CONF_CLOUD_ACCESS_SECRET,
+    CONF_CLOUD_APP_USER_ID,
+    CONF_CLOUD_REGION,
     CONF_ENDPOINT,
     CONF_TERMINAL_ID,
     CONF_TOKEN_INFO,
@@ -33,12 +39,21 @@ class TuyaShadowMeterConfigFlow(ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> TuyaShadowMeterOptionsFlow:
+        """Create the options flow."""
+        return TuyaShadowMeterOptionsFlow(config_entry)
+
     def __init__(self) -> None:
         """Initialize the config flow."""
         self._login_control = LoginControl()
         self._qr_code = ""
         self._user_code = ""
         self._device_id = ""
+        self._cloud_data: dict[str, str] = {}
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -50,6 +65,14 @@ class TuyaShadowMeterConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             self._user_code = user_input[CONF_USER_CODE]
             self._device_id = user_input.get(CONF_DEVICE_ID, "")
+            self._cloud_data = {
+                CONF_CLOUD_ACCESS_ID: user_input.get(CONF_CLOUD_ACCESS_ID, ""),
+                CONF_CLOUD_ACCESS_SECRET: user_input.get(
+                    CONF_CLOUD_ACCESS_SECRET, ""
+                ),
+                CONF_CLOUD_APP_USER_ID: user_input.get(CONF_CLOUD_APP_USER_ID, ""),
+                CONF_CLOUD_REGION: user_input.get(CONF_CLOUD_REGION, "cn"),
+            }
             success, response = await self._async_get_qr_code(self._user_code)
             if success:
                 return await self.async_step_scan()
@@ -72,6 +95,22 @@ class TuyaShadowMeterConfigFlow(ConfigFlow, domain=DOMAIN):
                     vol.Optional(
                         CONF_DEVICE_ID, default=user_input.get(CONF_DEVICE_ID, "")
                     ): str,
+                    vol.Optional(
+                        CONF_CLOUD_ACCESS_ID,
+                        default=user_input.get(CONF_CLOUD_ACCESS_ID, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_ACCESS_SECRET,
+                        default=user_input.get(CONF_CLOUD_ACCESS_SECRET, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_APP_USER_ID,
+                        default=user_input.get(CONF_CLOUD_APP_USER_ID, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_REGION,
+                        default=user_input.get(CONF_CLOUD_REGION, "cn"),
+                    ): vol.In(["cn", "us", "eu", "in"]),
                 }
             ),
             errors=errors,
@@ -138,6 +177,13 @@ class TuyaShadowMeterConfigFlow(ConfigFlow, domain=DOMAIN):
             CONF_TERMINAL_ID: info[CONF_TERMINAL_ID],
             CONF_ENDPOINT: info[CONF_ENDPOINT],
         }
+        entry_data.update(
+            {
+                key: value
+                for key, value in getattr(self, "_cloud_data", {}).items()
+                if value
+            }
+        )
 
         try:
             device_id = await self.hass.async_add_executor_job(
@@ -195,3 +241,43 @@ class TuyaShadowMeterConfigFlow(ConfigFlow, domain=DOMAIN):
                 return device.id
 
         return None
+
+
+class TuyaShadowMeterOptionsFlow(config_entries.OptionsFlow):
+    """Handle options for Tuya shadow meter."""
+
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Manage OpenAPI shadow options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        defaults = {**self.config_entry.data, **self.config_entry.options}
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_CLOUD_ACCESS_ID,
+                        default=defaults.get(CONF_CLOUD_ACCESS_ID, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_ACCESS_SECRET,
+                        default=defaults.get(CONF_CLOUD_ACCESS_SECRET, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_APP_USER_ID,
+                        default=defaults.get(CONF_CLOUD_APP_USER_ID, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_CLOUD_REGION,
+                        default=defaults.get(CONF_CLOUD_REGION, "cn"),
+                    ): vol.In(["cn", "us", "eu", "in"]),
+                }
+            ),
+        )

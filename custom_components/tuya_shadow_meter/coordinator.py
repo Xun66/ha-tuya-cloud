@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from datetime import timedelta
+import hashlib
+import hmac
+import time
 import logging
 from typing import Any
 
+import requests
 from tuya_sharing import Manager, SharingDeviceListener, SharingTokenListener
 from tuya_sharing.device import CustomerDevice
 from tuya_sharing.exceptions import ApiRequestException
@@ -16,6 +20,10 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_DEVICE_ID,
+    CONF_CLOUD_ACCESS_ID,
+    CONF_CLOUD_ACCESS_SECRET,
+    CONF_CLOUD_APP_USER_ID,
+    CONF_CLOUD_REGION,
     CONF_ENDPOINT,
     CONF_TERMINAL_ID,
     CONF_TOKEN_INFO,
@@ -29,6 +37,12 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 SHADOW_PROPERTIES_PATH = "/v2.0/cloud/thing/{device_id}/shadow/properties"
+OPENAPI_ENDPOINTS = {
+    "cn": "https://openapi.tuyacn.com",
+    "us": "https://openapi.tuyaus.com",
+    "eu": "https://openapi.tuyaeu.com",
+    "in": "https://openapi.tuyain.com",
+}
 
 
 class TuyaMeterHub(SharingDeviceListener, SharingTokenListener):
@@ -49,6 +63,9 @@ class TuyaMeterHub(SharingDeviceListener, SharingTokenListener):
         self.device: CustomerDevice | None = None
         self.coordinator: TuyaMeterCoordinator | None = None
         self.data: dict[str, Any] = {}
+        self.openapi = TuyaOpenApiClient.from_entry_data(
+            {**entry.data, **entry.options}
+        )
 
     async def async_initialize(self, coordinator: TuyaMeterCoordinator) -> None:
         """Load device data and start cloud push."""
@@ -109,6 +126,11 @@ class TuyaMeterHub(SharingDeviceListener, SharingTokenListener):
     def _read_properties(self) -> dict[str, Any]:
         """Read properties using the best API available for this login mode."""
         assert self.device is not None
+
+        if self.openapi is not None:
+            properties = self.openapi.get_shadow_properties(self.device.id)
+            if properties:
+                return properties
 
         try:
             response = self.manager.customer_api.get(
@@ -183,7 +205,9 @@ class TuyaMeterCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(hours=6),
+            update_interval=timedelta(seconds=60)
+            if hub.openapi is not None
+            else timedelta(hours=6),
         )
         self.hub = hub
 
@@ -245,3 +269,108 @@ def _normalize_status(status: Any) -> dict[str, Any]:
         }
 
     return {}
+
+
+class TuyaOpenApiClient:
+    """Small Tuya OpenAPI client for cloud shadow properties."""
+
+    def __init__(
+        self,
+        access_id: str,
+        access_secret: str,
+        app_user_id: str,
+        region: str,
+    ) -> None:
+        """Initialize the client."""
+        self.access_id = access_id
+        self.access_secret = access_secret
+        self.app_user_id = app_user_id
+        self.base_url = OPENAPI_ENDPOINTS[region]
+        self.access_token = ""
+        self.expire_at = 0.0
+
+    @classmethod
+    def from_entry_data(cls, data: dict[str, Any]) -> TuyaOpenApiClient | None:
+        """Create a client from config entry data if credentials are present."""
+        access_id = data.get(CONF_CLOUD_ACCESS_ID)
+        access_secret = data.get(CONF_CLOUD_ACCESS_SECRET)
+        app_user_id = data.get(CONF_CLOUD_APP_USER_ID)
+        region = data.get(CONF_CLOUD_REGION, "cn")
+
+        if not access_id or not access_secret or not app_user_id:
+            return None
+
+        return cls(access_id, access_secret, app_user_id, region)
+
+    def get_shadow_properties(self, device_id: str) -> dict[str, Any]:
+        """Return the device's cloud shadow properties."""
+        self._ensure_access_token()
+        response = self._request(
+            "GET",
+            SHADOW_PROPERTIES_PATH.format(device_id=device_id),
+        )
+        properties = response.get("result", {}).get("properties", [])
+        return {
+            prop["code"]: prop.get("value")
+            for prop in properties
+            if "code" in prop and "value" in prop
+        }
+
+    def _ensure_access_token(self) -> None:
+        """Refresh the access token if needed."""
+        if self.access_token and self.expire_at - 60 > time.time():
+            return
+
+        response = self._request("GET", "/v1.0/token?grant_type=1", use_token=False)
+        result = response.get("result", {})
+        self.access_token = result["access_token"]
+        self.expire_at = time.time() + int(result.get("expire_time", 0))
+
+    def _request(
+        self,
+        method: str,
+        path: str,
+        *,
+        use_token: bool = True,
+        body: str = "",
+    ) -> dict[str, Any]:
+        """Make a signed Tuya OpenAPI request."""
+        token = self.access_token if use_token else ""
+        timestamp = str(int(time.time() * 1000))
+        payload = (
+            self.access_id
+            + token
+            + timestamp
+            + method
+            + "\n"
+            + hashlib.sha256(body.encode("utf-8")).hexdigest()
+            + "\n\n/"
+            + path.lstrip("/")
+        )
+        signature = hmac.new(
+            self.access_secret.encode("latin-1"),
+            payload.encode("latin-1"),
+            hashlib.sha256,
+        ).hexdigest().upper()
+        headers = {
+            "client_id": self.access_id,
+            "sign": signature,
+            "t": timestamp,
+            "sign_method": "HMAC-SHA256",
+        }
+        if token:
+            headers["access_token"] = token
+
+        response = requests.request(
+            method,
+            self.base_url + path,
+            headers=headers,
+            timeout=20,
+        )
+        response.raise_for_status()
+        data = response.json()
+        if not data.get("success"):
+            raise UpdateFailed(
+                f"Tuya OpenAPI error {data.get('code')}: {data.get('msg')}"
+            )
+        return data
