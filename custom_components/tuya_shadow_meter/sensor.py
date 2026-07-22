@@ -41,16 +41,14 @@ class TuyaMeterSensorDescription(SensorEntityDescription):
 SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     TuyaMeterSensorDescription(
         key="device_state1",
-        name="第 1 路状态",
-        translation_key="device_state1",
+        name="Channel 1 state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
     TuyaMeterSensorDescription(
         key="cur_power1",
-        name="第 1 路功率",
-        translation_key="cur_power1",
+        name="Channel 1 power",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -59,8 +57,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="cur_current1",
-        name="第 1 路电流",
-        translation_key="cur_current1",
+        name="Channel 1 current",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -69,8 +66,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="cur_voltage1",
-        name="第 1 路电压",
-        translation_key="cur_voltage1",
+        name="Channel 1 voltage",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -79,8 +75,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="total_energy1",
-        name="第 1 路总电量",
-        translation_key="total_energy1",
+        name="Channel 1 total energy",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -89,8 +84,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="today_acc_energy1",
-        name="第 1 路今日用电",
-        translation_key="today_acc_energy1",
+        name="Channel 1 energy today",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -99,16 +93,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="power_type1",
-        name="第 1 路功率状态",
-        translation_key="power_type1",
+        name="Channel 1 power state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
     TuyaMeterSensorDescription(
         key="warn_power1",
-        name="第 1 路告警功率阈值",
-        translation_key="warn_power1",
+        name="Channel 1 warning power threshold",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         device_class=SensorDeviceClass.POWER,
@@ -117,16 +109,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="device_state2",
-        name="第 2 路状态",
-        translation_key="device_state2",
+        name="Channel 2 state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
     TuyaMeterSensorDescription(
         key="cur_power2",
-        name="第 2 路功率",
-        translation_key="cur_power2",
+        name="Channel 2 power",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -135,8 +125,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="cur_current2",
-        name="第 2 路电流",
-        translation_key="cur_current2",
+        name="Channel 2 current",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -145,8 +134,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="cur_voltage2",
-        name="第 2 路电压",
-        translation_key="cur_voltage2",
+        name="Channel 2 voltage",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -155,8 +143,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="total_energy2",
-        name="第 2 路总电量",
-        translation_key="total_energy2",
+        name="Channel 2 total energy",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -165,8 +152,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="today_acc_energy2",
-        name="第 2 路今日用电",
-        translation_key="today_acc_energy2",
+        name="Channel 2 energy today",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -175,16 +161,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="power_type2",
-        name="第 2 路功率状态",
-        translation_key="power_type2",
+        name="Channel 2 power state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
     TuyaMeterSensorDescription(
         key="warn_power2",
-        name="第 2 路告警功率阈值",
-        translation_key="warn_power2",
+        name="Channel 2 warning power threshold",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         device_class=SensorDeviceClass.POWER,
@@ -193,8 +177,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="all_energy",
-        name="总电量",
-        translation_key="all_energy",
+        name="Total energy",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -203,8 +186,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     ),
     TuyaMeterSensorDescription(
         key="net_state",
-        name="联网状态",
-        translation_key="net_state",
+        name="Cloud connection state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:cloud-check-outline",
@@ -244,7 +226,7 @@ def _async_migrate_existing_entities(
         updates: dict[str, Any] = {
             "has_entity_name": True,
             "original_name": description.name,
-            "translation_key": description.translation_key,
+            "translation_key": None,
         }
         if description.entity_category is not None:
             updates["entity_category"] = description.entity_category
