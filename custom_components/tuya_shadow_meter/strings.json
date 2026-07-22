@@ -1,0 +1,81 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Tuya Shadow Meter",
+        "description": "Enter the User Code from the Smart Life or Tuya Smart app. Optionally enter the target device ID.",
+        "data": {
+          "user_code": "User Code",
+          "device_id": "Device ID"
+        }
+      },
+      "scan": {
+        "title": "Scan QR code",
+        "description": "Scan this QR code in the Smart Life or Tuya Smart app, then submit this step."
+      }
+    },
+    "error": {
+      "login_error": "Tuya login failed: {msg} ({code})",
+      "cannot_connect": "Could not query devices from Tuya after login.",
+      "unsupported_device": "No supported two-channel electricity meter was found in this account."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "device_state1": {
+        "name": "Channel 1 state"
+      },
+      "cur_power1": {
+        "name": "Channel 1 power"
+      },
+      "cur_current1": {
+        "name": "Channel 1 current"
+      },
+      "cur_voltage1": {
+        "name": "Channel 1 voltage"
+      },
+      "total_energy1": {
+        "name": "Channel 1 total energy"
+      },
+      "today_acc_energy1": {
+        "name": "Channel 1 energy today"
+      },
+      "power_type1": {
+        "name": "Channel 1 power type"
+      },
+      "warn_power1": {
+        "name": "Channel 1 warning power"
+      },
+      "device_state2": {
+        "name": "Channel 2 state"
+      },
+      "cur_power2": {
+        "name": "Channel 2 power"
+      },
+      "cur_current2": {
+        "name": "Channel 2 current"
+      },
+      "cur_voltage2": {
+        "name": "Channel 2 voltage"
+      },
+      "total_energy2": {
+        "name": "Channel 2 total energy"
+      },
+      "today_acc_energy2": {
+        "name": "Channel 2 energy today"
+      },
+      "power_type2": {
+        "name": "Channel 2 power type"
+      },
+      "warn_power2": {
+        "name": "Channel 2 warning power"
+      },
+      "all_energy": {
+        "name": "Total energy"
+      },
+      "net_state": {
+        "name": "Network state"
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "涂鸦双路计量器",
+        "description": "输入智能生活或涂鸦智能 App 中的 User Code。也可以指定目标设备 ID。",
+        "data": {
+          "user_code": "User Code",
+          "device_id": "设备 ID"
+        }
+      },
+      "scan": {
+        "title": "扫码登录",
+        "description": "请用智能生活或涂鸦智能 App 扫描此二维码，然后提交本步骤。"
+      }
+    },
+    "error": {
+      "login_error": "涂鸦登录失败：{msg}（{code}）",
+      "cannot_connect": "登录后无法从涂鸦查询设备列表。",
+      "unsupported_device": "当前账号下没有找到受支持的双路互感计量器。"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "device_state1": {
+        "name": "第 1 路状态"
+      },
+      "cur_power1": {
+        "name": "第 1 路功率"
+      },
+      "cur_current1": {
+        "name": "第 1 路电流"
+      },
+      "cur_voltage1": {
+        "name": "第 1 路电压"
+      },
+      "total_energy1": {
+        "name": "第 1 路总电量"
+      },
+      "today_acc_energy1": {
+        "name": "第 1 路今日用电"
+      },
+      "power_type1": {
+        "name": "第 1 路功率类型"
+      },
+      "warn_power1": {
+        "name": "第 1 路告警功率"
+      },
+      "device_state2": {
+        "name": "第 2 路状态"
+      },
+      "cur_power2": {
+        "name": "第 2 路功率"
+      },
+      "cur_current2": {
+        "name": "第 2 路电流"
+      },
+      "cur_voltage2": {
+        "name": "第 2 路电压"
+      },
+      "total_energy2": {
+        "name": "第 2 路总电量"
+      },
+      "today_acc_energy2": {
+        "name": "第 2 路今日用电"
+      },
+      "power_type2": {
+        "name": "第 2 路功率类型"
+      },
+      "warn_power2": {
+        "name": "第 2 路告警功率"
+      },
+      "all_energy": {
+        "name": "总电量"
+      },
+      "net_state": {
+        "name": "网络状态"
+      }
+    }
+  }
+}
