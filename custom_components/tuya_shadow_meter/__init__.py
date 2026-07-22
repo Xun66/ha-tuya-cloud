@@ -1,4 +1,4 @@
-"""Tuya sharing MQTT support for selected Tuya devices."""
+"""Tuya sharing MQTT support for the currently supported meter device."""
 
 from __future__ import annotations
 
