@@ -2,23 +2,23 @@
   "config": {
     "step": {
       "user": {
-        "title": "涂鸦双路计量器",
-        "description": "输入涂鸦云开发 OpenAPI 凭据和目标设备 ID。",
+        "title": "Tuya Cloud",
+        "description": "输入 Smart Life 或涂鸦 App 里的 User Code，然后扫码。传感器初始可能约 1 分钟不可用。打开涂鸦 App 中的设备页面可触发更快更新。",
         "data": {
-          "device_id": "设备 ID",
-          "cloud_access_id": "云开发 Access ID",
-          "cloud_access_secret": "云开发 Access Secret",
-          "cloud_app_user_id": "App 用户 ID",
-          "cloud_region": "云开发数据中心"
+          "user_code": "User Code"
         }
       },
+      "scan": {
+        "title": "扫描二维码",
+        "description": "用 Smart Life 或涂鸦 App 扫描此二维码，然后提交本步骤。如果二维码过期，再提交一次会生成新的二维码。"
+      },
       "init": {
-        "title": "涂鸦双路计量器",
-        "description": "更新涂鸦云开发 OpenAPI 凭据。"
+        "title": "Tuya Cloud",
+        "description": "只走 MQ。若传感器初始不可用，请打开涂鸦 App 中的设备页面触发更快更新。"
       }
     },
     "error": {
-      "cannot_connect": "无法通过涂鸦云开发 OpenAPI 读取目标计量器。"
+      "login_error": "涂鸦扫码登录失败：{msg}（{code}）"
     }
   },
   "entity": {

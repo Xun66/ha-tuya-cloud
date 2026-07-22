@@ -2,23 +2,23 @@
   "config": {
     "step": {
       "user": {
-        "title": "Tuya Shadow Meter",
-        "description": "Enter Tuya Cloud OpenAPI credentials and the target meter device ID.",
+        "title": "Tuya Cloud",
+        "description": "Enter the User Code from the Smart Life or Tuya app, then scan the QR code. Sensors may stay unavailable for about the first minute. Open the device page in the Tuya app to trigger faster updates.",
         "data": {
-          "device_id": "Device ID",
-          "cloud_access_id": "Cloud Access ID",
-          "cloud_access_secret": "Cloud Access Secret",
-          "cloud_app_user_id": "Cloud App User ID",
-          "cloud_region": "Cloud Region"
+          "user_code": "User Code"
         }
       },
+      "scan": {
+        "title": "Scan QR Code",
+        "description": "Scan this QR code with the Smart Life or Tuya app, then submit this step. If the QR code expires, submit again to generate a new one."
+      },
       "init": {
-        "title": "Tuya Shadow Meter",
-        "description": "Update Tuya Cloud OpenAPI credentials."
+        "title": "Tuya Cloud",
+        "description": "MQ-only. If sensors are initially unavailable, open the device page in the Tuya app to trigger faster updates."
       }
     },
     "error": {
-      "cannot_connect": "Could not read the target meter through Tuya Cloud OpenAPI."
+      "login_error": "Tuya QR login failed: {msg} ({code})"
     }
   },
   "entity": {

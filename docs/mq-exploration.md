@@ -75,9 +75,50 @@ useful result should contain pushed status entries for the same codes already
 read from shadow, for example `cur_power1`, `cur_power2`, `cur_current1`, or
 `cur_voltage2`.
 
+## Sharing QR Probe
+
+Use `tools/tuya_sharing_mq_probe.py` to test the official Home Assistant/Tuya
+sharing authentication route. This is the same QR-login family used by Home
+Assistant's built-in Tuya integration.
+
+Required environment variables:
+
+```text
+TUYA_USER_CODE
+TUYA_DEVICE_ID
+```
+
+Optional environment variables:
+
+```text
+TUYA_DURATION=300
+```
+
+Install probe-only dependencies:
+
+```bash
+python3 -m pip install tuya-device-sharing-sdk qrcode[pil]
+```
+
+Run:
+
+```bash
+TUYA_USER_CODE=... \
+TUYA_DEVICE_ID=... \
+TUYA_DURATION=300 \
+python3 tools/tuya_sharing_mq_probe.py
+```
+
+The script prints the `tuyaSmart--qrLogin?...` payload, writes a QR image to
+`/tmp/tuya-sharing-mq-login.png` when `qrcode` is available, starts the sharing
+MQTT subscription after the app scan is accepted, and prints raw MQTT messages.
+Use this route to verify whether the two-circuit meter publishes frequent
+`protocol=4` reports through sharing MQTT.
+
 ## References
 
 - Tuya Service SDK list: https://developer.tuya.com/en/docs/iot/server-sdk?id=Kbw09frvx48db
 - Tuya Message Service integration: https://developer.tuya.com/en/docs/iot/integrate-mq?id=Kavqdgattt1y2
 - Tuya Python SDK message subscription example: https://developer.tuya.com/cn/docs/iot/device-control-best-practice?id=Ka72202tz4m67
 - Tuya IoT Python SDK: https://pypi.org/project/tuya-iot-py-sdk/
+- Home Assistant Tuya QR login flow: https://www.home-assistant.io/integrations/tuya/

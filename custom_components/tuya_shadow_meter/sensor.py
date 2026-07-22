@@ -1,4 +1,4 @@
-"""Sensors for the Tuya two-channel electricity meter."""
+"""Sensors for supported Tuya devices."""
 
 from __future__ import annotations
 
@@ -20,33 +20,31 @@ from homeassistant.const import (
     UnitOfPower,
 )
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.entity import EntityCategory
-from homeassistant.helpers.entity_registry import RegistryEntryDisabler
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .coordinator import TuyaMeterCoordinator
+from .coordinator import TuyaCloudCoordinator
 from .const import DOMAIN
 
 
 @dataclass(frozen=True, kw_only=True)
-class TuyaMeterSensorDescription(SensorEntityDescription):
-    """Describe a Tuya meter sensor."""
+class TuyaCloudSensorDescription(SensorEntityDescription):
+    """Describe a Tuya cloud sensor."""
 
     scale: int | None = None
     value_fn: Callable[[Any], Any] | None = None
 
 
-SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
-    TuyaMeterSensorDescription(
+SENSORS: tuple[TuyaCloudSensorDescription, ...] = (
+    TuyaCloudSensorDescription(
         key="device_state1",
         name="Channel 1 state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_power1",
         name="Channel 1 power",
         device_class=SensorDeviceClass.POWER,
@@ -55,7 +53,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=1,
         suggested_display_precision=1,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_current1",
         name="Channel 1 current",
         device_class=SensorDeviceClass.CURRENT,
@@ -64,7 +62,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_voltage1",
         name="Channel 1 voltage",
         device_class=SensorDeviceClass.VOLTAGE,
@@ -73,7 +71,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=1,
         suggested_display_precision=1,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="total_energy1",
         name="Channel 1 total energy",
         device_class=SensorDeviceClass.ENERGY,
@@ -82,7 +80,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="today_acc_energy1",
         name="Channel 1 energy today",
         device_class=SensorDeviceClass.ENERGY,
@@ -91,14 +89,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="power_type1",
         name="Channel 1 power state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="warn_power1",
         name="Channel 1 warning power threshold",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -107,14 +105,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfPower.WATT,
         scale=0,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="device_state2",
         name="Channel 2 state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_power2",
         name="Channel 2 power",
         device_class=SensorDeviceClass.POWER,
@@ -123,7 +121,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=1,
         suggested_display_precision=1,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_current2",
         name="Channel 2 current",
         device_class=SensorDeviceClass.CURRENT,
@@ -132,7 +130,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="cur_voltage2",
         name="Channel 2 voltage",
         device_class=SensorDeviceClass.VOLTAGE,
@@ -141,7 +139,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=1,
         suggested_display_precision=1,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="total_energy2",
         name="Channel 2 total energy",
         device_class=SensorDeviceClass.ENERGY,
@@ -150,7 +148,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="today_acc_energy2",
         name="Channel 2 energy today",
         device_class=SensorDeviceClass.ENERGY,
@@ -159,14 +157,14 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="power_type2",
         name="Channel 2 power state",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="warn_power2",
         name="Channel 2 warning power threshold",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -175,7 +173,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfPower.WATT,
         scale=0,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="all_energy",
         name="Total energy",
         device_class=SensorDeviceClass.ENERGY,
@@ -184,7 +182,7 @@ SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
         scale=3,
         suggested_display_precision=3,
     ),
-    TuyaMeterSensorDescription(
+    TuyaCloudSensorDescription(
         key="net_state",
         name="Cloud connection state",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -199,74 +197,39 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Tuya meter sensors."""
-    coordinator: TuyaMeterCoordinator = hass.data[DOMAIN][entry.entry_id]
-    _async_migrate_existing_entities(hass, coordinator)
+    """Set up Tuya cloud sensors."""
+    coordinator: TuyaCloudCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
-        TuyaMeterSensor(coordinator, description) for description in SENSORS
+        TuyaCloudSensor(coordinator, device_id, description)
+        for device_id in coordinator.hub.devices
+        for description in SENSORS
     )
 
 
-def _async_migrate_existing_entities(
-    hass: HomeAssistant,
-    coordinator: TuyaMeterCoordinator,
-) -> None:
-    """Refresh entity registry metadata from earlier generic names."""
-    device = coordinator.hub.device
-    if device is None:
-        return
+class TuyaCloudSensor(CoordinatorEntity[TuyaCloudCoordinator], SensorEntity):
+    """A Tuya cloud sensor."""
 
-    entity_registry = er.async_get(hass)
-    for description in SENSORS:
-        unique_id = f"{DOMAIN}_{device.id}_{description.key}"
-        entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, unique_id)
-        if entity_id is None:
-            continue
-
-        updates: dict[str, Any] = {
-            "has_entity_name": True,
-            "original_name": description.name,
-            "translation_key": None,
-        }
-        if description.entity_category is not None:
-            updates["entity_category"] = description.entity_category
-
-        registry_entry = entity_registry.async_get(entity_id)
-        if (
-            registry_entry is not None
-            and registry_entry.disabled_by is None
-            and registry_entry.name is None
-            and not description.entity_registry_enabled_default
-        ):
-            updates["disabled_by"] = RegistryEntryDisabler.INTEGRATION
-
-        entity_registry.async_update_entity(entity_id, **updates)
-
-
-class TuyaMeterSensor(CoordinatorEntity[TuyaMeterCoordinator], SensorEntity):
-    """A Tuya meter sensor."""
-
-    entity_description: TuyaMeterSensorDescription
+    entity_description: TuyaCloudSensorDescription
     _attr_has_entity_name = True
 
     def __init__(
         self,
-        coordinator: TuyaMeterCoordinator,
-        description: TuyaMeterSensorDescription,
+        coordinator: TuyaCloudCoordinator,
+        device_id: str,
+        description: TuyaCloudSensorDescription,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.entity_description = description
-        device = coordinator.hub.device
-        assert device is not None
-        self._device_id = device.id
+        self._device_id = device_id
         self._attr_unique_id = f"{DOMAIN}_{self._device_id}_{description.key}"
         self._attr_name = description.name
 
     @property
     def native_value(self) -> Any:
         """Return the sensor value."""
-        value = self.coordinator.data.get(self.entity_description.key)
+        device_data = self.coordinator.data.get(self._device_id, {})
+        value = device_data.get(self.entity_description.key)
         if value is None:
             return None
 
@@ -282,16 +245,17 @@ class TuyaMeterSensor(CoordinatorEntity[TuyaMeterCoordinator], SensorEntity):
     @property
     def available(self) -> bool:
         """Return whether the sensor is available."""
+        device_data = self.coordinator.data.get(self._device_id, {})
         return (
             super().available
-            and self.entity_description.key in self.coordinator.data
-            and self.coordinator.hub.device is not None
+            and self.entity_description.key in device_data
+            and self._device_id in self.coordinator.hub.devices
         )
 
     @property
     def device_info(self) -> dict[str, Any]:
         """Return device registry information."""
-        device = self.coordinator.hub.device
+        device = self.coordinator.hub.devices.get(self._device_id)
         if device is None:
             return {
                 "identifiers": {(DOMAIN, self._device_id)},
