@@ -3,9 +3,8 @@
     "step": {
       "user": {
         "title": "Tuya Shadow Meter",
-        "description": "Enter the User Code from the Smart Life or Tuya Smart app. Optionally enter the target device ID.",
+        "description": "Enter Tuya Cloud OpenAPI credentials and the target meter device ID.",
         "data": {
-          "user_code": "User Code",
           "device_id": "Device ID",
           "cloud_access_id": "Cloud Access ID",
           "cloud_access_secret": "Cloud Access Secret",
@@ -13,15 +12,13 @@
           "cloud_region": "Cloud Region"
         }
       },
-      "scan": {
-        "title": "Scan QR code",
-        "description": "Scan this QR code in the Smart Life or Tuya Smart app, then submit this step."
+      "init": {
+        "title": "Tuya Shadow Meter",
+        "description": "Update Tuya Cloud OpenAPI credentials."
       }
     },
     "error": {
-      "login_error": "Tuya login failed: {msg} ({code})",
-      "cannot_connect": "Could not query devices from Tuya after login.",
-      "unsupported_device": "No supported two-channel electricity meter was found in this account."
+      "cannot_connect": "Could not read the target meter through Tuya Cloud OpenAPI."
     }
   },
   "entity": {

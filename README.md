@@ -14,12 +14,11 @@ local protocol implementations did not return usable datapoints for this device.
 The Tuya Cloud 2.0 shadow API does expose the meter values, and the official
 Home Assistant Tuya integration uses Tuya's device sharing SDK with cloud push.
 
-This integration follows that route:
+This integration follows the Tuya Cloud OpenAPI route:
 
-- QR-code login using the Smart Life / Tuya Smart app.
-- Initial state read from Tuya cloud.
-- Live updates through the Tuya sharing SDK MQTT connection.
-- A slow fallback refresh every six hours.
+- Authentication with Tuya Cloud OpenAPI Access ID and Access Secret.
+- State reads from Tuya Cloud 2.0 shadow properties.
+- Refresh every 60 seconds.
 
 ## Installation
 
@@ -39,12 +38,11 @@ Copy `custom_components/tuya_shadow_meter` into your Home Assistant
 
 The config flow asks for:
 
-- **User Code**: The user code from the Smart Life / Tuya Smart app.
-- **Device ID**: Optional. Leave blank to use the first supported meter found in
-  the scanned account.
-
-After submitting the user code, scan the QR code with the Tuya app and submit
-the scan step in Home Assistant.
+- **Device ID**
+- **Cloud Access ID**
+- **Cloud Access Secret**
+- **Cloud App User ID**
+- **Cloud Region**
 
 ## Sensors
 
@@ -65,5 +63,4 @@ The integration creates sensors for:
 - This is not a generic Tuya integration.
 - Local LAN control is deliberately not used.
 - Control commands are not implemented; the meter is read-only in Home Assistant.
-- The integration depends on `tuya-device-sharing-sdk==0.2.10`, the same family
-  of SDK used by Home Assistant's official Tuya integration.
+- The integration does not use Tuya's QR-code login flow.

@@ -5,9 +5,9 @@
   "config_flow": true,
   "documentation": "https://github.com/tzz/localtuya",
   "integration_type": "hub",
-  "iot_class": "cloud_push",
+  "iot_class": "cloud_poll",
   "requirements": [
-    "tuya-device-sharing-sdk==0.2.10"
+    "requests"
   ],
   "version": "0.1.0"
 }

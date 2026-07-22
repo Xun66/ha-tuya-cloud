@@ -1,4 +1,4 @@
-"""Tuya cloud-push support for a two-channel electricity meter."""
+"""Tuya cloud polling support for a two-channel electricity meter."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ async def async_unload_entry(
 async def async_remove_entry(
     hass: HomeAssistant, entry: ConfigEntry
 ) -> None:
-    """Remove a config entry and revoke its Tuya terminal token."""
+    """Remove a config entry."""
     coordinator: TuyaMeterCoordinator | None = hass.data.get(DOMAIN, {}).get(
         entry.entry_id
     )

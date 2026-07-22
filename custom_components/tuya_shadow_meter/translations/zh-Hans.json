@@ -3,9 +3,8 @@
     "step": {
       "user": {
         "title": "涂鸦双路计量器",
-        "description": "输入智能生活或涂鸦智能 App 中的 User Code。也可以指定目标设备 ID。",
+        "description": "输入涂鸦云开发 OpenAPI 凭据和目标设备 ID。",
         "data": {
-          "user_code": "User Code",
           "device_id": "设备 ID",
           "cloud_access_id": "云开发 Access ID",
           "cloud_access_secret": "云开发 Access Secret",
@@ -13,15 +12,13 @@
           "cloud_region": "云开发数据中心"
         }
       },
-      "scan": {
-        "title": "扫码登录",
-        "description": "请用智能生活或涂鸦智能 App 扫描此二维码，然后提交本步骤。"
+      "init": {
+        "title": "涂鸦双路计量器",
+        "description": "更新涂鸦云开发 OpenAPI 凭据。"
       }
     },
     "error": {
-      "login_error": "涂鸦登录失败：{msg}（{code}）",
-      "cannot_connect": "登录后无法从涂鸦查询设备列表。",
-      "unsupported_device": "当前账号下没有找到受支持的双路互感计量器。"
+      "cannot_connect": "无法通过涂鸦云开发 OpenAPI 读取目标计量器。"
     }
   },
   "entity": {
