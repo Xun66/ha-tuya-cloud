@@ -8,18 +8,18 @@
   <a href="README.zh-Hans.md">中文说明</a>
 </p>
 
-Home Assistant custom integration for selected Tuya devices that expose useful
-MQTT updates through Tuya's sharing API.
+Home Assistant custom integration for one currently supported Tuya meter device
+that exposes useful MQTT updates through Tuya's sharing API.
 
-The current built-in device profile targets the Tuya product
+For now, this integration only supports the Tuya product
 `79a7z01v3n35kytb`, seen in Tuya as `Double Digital Meter` /
-`双路互感计量器`. Additional devices can be added by contributing a product
-profile with its MQTT datapoint mapping.
+`双路互感计量器`. Support for other devices requires a new product profile and
+MQTT datapoint mapping.
 
 ## What It Does
 
 - Logs in with the same QR-code flow used by Home Assistant's official Tuya integration.
-- Discovers supported devices from your Tuya/Smart Life account.
+- Discovers the supported meter from your Tuya/Smart Life account.
 - Updates sensors from Tuya MQTT push messages.
 - Exposes channel 1 and channel 2 power, current, voltage, and energy sensors.
 - Uses fixed English entity names such as `Channel 1 power` and
@@ -31,13 +31,13 @@ profile with its MQTT datapoint mapping.
 
 ## Demo
 
-After setup, Home Assistant shows supported devices with their mapped sensors.
+After setup, Home Assistant shows the supported meter with its mapped sensors.
 
 ![Home Assistant meter demo](https://github.com/Xun66/ha-tuya-cloud/releases/download/readme-assets/demo.jpg)
 
 ## Why MQ
 
-The first supported device exposes Tuya's local LAN port, but the public local
+The supported meter exposes Tuya's local LAN port, but the public local
 Tuya protocol implementations tested so far did not return usable datapoints for
 it. Tuya MQTT pushes usable `protocol=4` datapoints, including both channel
 power/current/voltage and energy values.
@@ -50,11 +50,15 @@ usually triggers faster updates.
 
 ### HACS
 
-1. In HACS, add this repository as a custom repository.
-2. Select category **Integration**.
-3. Install **Tuya Cloud**.
-4. Restart Home Assistant.
-5. Add **Tuya Cloud** from **Settings > Devices & services**.
+This integration is distributed as a HACS custom repository. It is not available
+in the default HACS store search until you add the repository URL manually.
+
+1. Open HACS.
+2. Open the three-dot menu and choose **Custom repositories**.
+3. Add `https://github.com/Xun66/ha-tuya-cloud` with category **Integration**.
+4. Search for and install **Tuya Cloud** in HACS.
+5. Restart Home Assistant.
+6. Add **Tuya Cloud** from **Settings > Devices & services**.
 
 ### Manual
 
@@ -69,7 +73,7 @@ Copy `custom_components/tuya_shadow_meter` into your Home Assistant
 4. Enter the User Code.
 5. Scan the QR code with the same Tuya app.
 
-Supported devices are discovered automatically after login.
+The supported meter is discovered automatically after login.
 
 ## Sensors
 
@@ -101,7 +105,8 @@ brands endpoint.
 
 ## Limitations
 
-- Only devices with a matching built-in profile are supported.
+- Only one built-in device profile is supported for now:
+  `79a7z01v3n35kytb` / `Double Digital Meter` / `双路互感计量器`.
 - It is not a generic Tuya integration.
 - Tuya cloud connectivity and MQTT availability are required.
 - Initial sensor values depend on the first MQTT status push.

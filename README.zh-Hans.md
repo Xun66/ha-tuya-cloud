@@ -8,17 +8,17 @@
   <a href="README.md">English README</a>
 </p>
 
-这是一个 Home Assistant 自定义集成，用于读取通过涂鸦 sharing API 推送
-MQTT 数据的受支持设备。
+这是一个 Home Assistant 自定义集成，目前用于读取一款通过涂鸦 sharing API 推送
+MQTT 数据的电表设备。
 
-当前内置的设备 profile 支持涂鸦产品 `79a7z01v3n35kytb`，在涂鸦平台中通常显示为
-`Double Digital Meter` / `双路互感计量器`。后续可以通过贡献新的产品
-profile 和 MQTT 数据点映射来支持更多设备。
+目前本集成只支持涂鸦产品 `79a7z01v3n35kytb`，在涂鸦平台中通常显示为
+`Double Digital Meter` / `双路互感计量器`。支持其他设备需要新增对应的产品
+profile 和 MQTT 数据点映射。
 
 ## 功能
 
 - 使用 Home Assistant 官方涂鸦集成同款扫码登录流程。
-- 从你的涂鸦/Smart Life 账号自动发现受支持设备。
+- 从你的涂鸦/Smart Life 账号自动发现这款受支持电表。
 - 通过涂鸦 MQTT 推送更新传感器。
 - 为当前 profile 暴露第 1 路和第 2 路的功率、电流、电压、电量传感器。
 - 使用固定英文实体名，例如 `Channel 1 power` 和 `Channel 2 power`。
@@ -29,13 +29,13 @@ profile 和 MQTT 数据点映射来支持更多设备。
 
 ## 效果图
 
-配置完成后，Home Assistant 会显示受支持设备及其已映射的传感器。
+配置完成后，Home Assistant 会显示这款受支持电表及其已映射的传感器。
 
 ![Home Assistant 电表效果图](https://github.com/Xun66/ha-tuya-cloud/releases/download/readme-assets/demo.jpg)
 
 ## 为什么走 MQ
 
-首个受支持设备确实开放了涂鸦本地 LAN 端口，但目前测试过的公开 local Tuya
+这款受支持电表确实开放了涂鸦本地 LAN 端口，但目前测试过的公开 local Tuya
 协议实现无法从这个设备返回可用数据点。涂鸦 MQTT 会为它推送可用的
 `protocol=4` 数据点，包括两路功率、电流、电压和电量。
 
@@ -45,11 +45,14 @@ profile 和 MQTT 数据点映射来支持更多设备。
 
 ### HACS
 
-1. 在 HACS 中添加此仓库为自定义仓库。
-2. 类型选择 **Integration**。
-3. 安装 **Tuya Cloud**。
-4. 重启 Home Assistant。
-5. 在 **设置 > 设备与服务** 中添加 **Tuya Cloud**。
+本集成通过 HACS 自定义仓库分发。它不在 HACS 默认商店里；需要先手动添加仓库地址，之后才能搜索安装。
+
+1. 打开 HACS。
+2. 打开右上角三点菜单，选择 **Custom repositories**。
+3. 添加 `https://github.com/Xun66/ha-tuya-cloud`，类型选择 **Integration**。
+4. 在 HACS 中搜索并安装 **Tuya Cloud**。
+5. 重启 Home Assistant。
+6. 在 **设置 > 设备与服务** 中添加 **Tuya Cloud**。
 
 ### 手动安装
 
@@ -64,7 +67,7 @@ profile 和 MQTT 数据点映射来支持更多设备。
 4. 输入 User Code。
 5. 用同一个涂鸦 App 扫描二维码。
 
-扫码后会自动添加受支持设备。
+扫码后会自动添加这款受支持电表。
 
 ## 传感器
 
@@ -94,7 +97,8 @@ brands 接口。
 
 ## 限制
 
-- 只有内置 profile 匹配的设备才会被支持。
+- 目前只内置支持一款设备：`79a7z01v3n35kytb` / `Double Digital Meter` /
+  `双路互感计量器`。
 - 这不是通用涂鸦集成。
 - 需要可用的涂鸦云连接和 MQTT。
 - 初始传感器数值依赖第一条 MQTT 状态推送。
