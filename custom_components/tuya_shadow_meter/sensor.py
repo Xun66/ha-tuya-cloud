@@ -20,6 +20,9 @@ from homeassistant.const import (
     UnitOfPower,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity import EntityCategory
+from homeassistant.helpers.entity_registry import RegistryEntryDisabler
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -38,129 +41,172 @@ class TuyaMeterSensorDescription(SensorEntityDescription):
 SENSORS: tuple[TuyaMeterSensorDescription, ...] = (
     TuyaMeterSensorDescription(
         key="device_state1",
+        name="第 1 路状态",
         translation_key="device_state1",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
     TuyaMeterSensorDescription(
         key="cur_power1",
+        name="第 1 路功率",
         translation_key="cur_power1",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
         scale=1,
+        suggested_display_precision=1,
     ),
     TuyaMeterSensorDescription(
         key="cur_current1",
+        name="第 1 路电流",
         translation_key="cur_current1",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="cur_voltage1",
+        name="第 1 路电压",
         translation_key="cur_voltage1",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
         scale=1,
+        suggested_display_precision=1,
     ),
     TuyaMeterSensorDescription(
         key="total_energy1",
+        name="第 1 路总电量",
         translation_key="total_energy1",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="today_acc_energy1",
+        name="第 1 路今日用电",
         translation_key="today_acc_energy1",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="power_type1",
+        name="第 1 路功率状态",
         translation_key="power_type1",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
     TuyaMeterSensorDescription(
         key="warn_power1",
+        name="第 1 路告警功率阈值",
         translation_key="warn_power1",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         scale=0,
     ),
     TuyaMeterSensorDescription(
         key="device_state2",
+        name="第 2 路状态",
         translation_key="device_state2",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:state-machine",
     ),
     TuyaMeterSensorDescription(
         key="cur_power2",
+        name="第 2 路功率",
         translation_key="cur_power2",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         state_class=SensorStateClass.MEASUREMENT,
         scale=1,
+        suggested_display_precision=1,
     ),
     TuyaMeterSensorDescription(
         key="cur_current2",
+        name="第 2 路电流",
         translation_key="cur_current2",
         device_class=SensorDeviceClass.CURRENT,
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         state_class=SensorStateClass.MEASUREMENT,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="cur_voltage2",
+        name="第 2 路电压",
         translation_key="cur_voltage2",
         device_class=SensorDeviceClass.VOLTAGE,
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         state_class=SensorStateClass.MEASUREMENT,
         scale=1,
+        suggested_display_precision=1,
     ),
     TuyaMeterSensorDescription(
         key="total_energy2",
+        name="第 2 路总电量",
         translation_key="total_energy2",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="today_acc_energy2",
+        name="第 2 路今日用电",
         translation_key="today_acc_energy2",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="power_type2",
+        name="第 2 路功率状态",
         translation_key="power_type2",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:alert-circle-outline",
     ),
     TuyaMeterSensorDescription(
         key="warn_power2",
+        name="第 2 路告警功率阈值",
         translation_key="warn_power2",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.WATT,
         scale=0,
     ),
     TuyaMeterSensorDescription(
         key="all_energy",
+        name="总电量",
         translation_key="all_energy",
         device_class=SensorDeviceClass.ENERGY,
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         state_class=SensorStateClass.TOTAL_INCREASING,
         scale=3,
+        suggested_display_precision=3,
     ),
     TuyaMeterSensorDescription(
         key="net_state",
+        name="联网状态",
         translation_key="net_state",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        entity_registry_enabled_default=False,
         icon="mdi:cloud-check-outline",
     ),
 )
@@ -173,9 +219,46 @@ async def async_setup_entry(
 ) -> None:
     """Set up Tuya meter sensors."""
     coordinator: TuyaMeterCoordinator = hass.data[DOMAIN][entry.entry_id]
+    _async_migrate_existing_entities(hass, coordinator)
     async_add_entities(
         TuyaMeterSensor(coordinator, description) for description in SENSORS
     )
+
+
+def _async_migrate_existing_entities(
+    hass: HomeAssistant,
+    coordinator: TuyaMeterCoordinator,
+) -> None:
+    """Refresh entity registry metadata from earlier generic names."""
+    device = coordinator.hub.device
+    if device is None:
+        return
+
+    entity_registry = er.async_get(hass)
+    for description in SENSORS:
+        unique_id = f"{DOMAIN}_{device.id}_{description.key}"
+        entity_id = entity_registry.async_get_entity_id("sensor", DOMAIN, unique_id)
+        if entity_id is None:
+            continue
+
+        updates: dict[str, Any] = {
+            "has_entity_name": True,
+            "original_name": description.name,
+            "translation_key": description.translation_key,
+        }
+        if description.entity_category is not None:
+            updates["entity_category"] = description.entity_category
+
+        registry_entry = entity_registry.async_get(entity_id)
+        if (
+            registry_entry is not None
+            and registry_entry.disabled_by is None
+            and registry_entry.name is None
+            and not description.entity_registry_enabled_default
+        ):
+            updates["disabled_by"] = RegistryEntryDisabler.INTEGRATION
+
+        entity_registry.async_update_entity(entity_id, **updates)
 
 
 class TuyaMeterSensor(CoordinatorEntity[TuyaMeterCoordinator], SensorEntity):
@@ -196,6 +279,7 @@ class TuyaMeterSensor(CoordinatorEntity[TuyaMeterCoordinator], SensorEntity):
         assert device is not None
         self._device_id = device.id
         self._attr_unique_id = f"{DOMAIN}_{self._device_id}_{description.key}"
+        self._attr_name = description.name
 
     @property
     def native_value(self) -> Any:

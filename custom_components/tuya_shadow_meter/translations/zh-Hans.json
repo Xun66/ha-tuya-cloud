@@ -42,10 +42,10 @@
         "name": "第 1 路今日用电"
       },
       "power_type1": {
-        "name": "第 1 路功率类型"
+        "name": "第 1 路功率状态"
       },
       "warn_power1": {
-        "name": "第 1 路告警功率"
+        "name": "第 1 路告警功率阈值"
       },
       "device_state2": {
         "name": "第 2 路状态"
@@ -66,16 +66,16 @@
         "name": "第 2 路今日用电"
       },
       "power_type2": {
-        "name": "第 2 路功率类型"
+        "name": "第 2 路功率状态"
       },
       "warn_power2": {
-        "name": "第 2 路告警功率"
+        "name": "第 2 路告警功率阈值"
       },
       "all_energy": {
         "name": "总电量"
       },
       "net_state": {
-        "name": "网络状态"
+        "name": "联网状态"
       }
     }
   }

@@ -42,10 +42,10 @@
         "name": "Channel 1 energy today"
       },
       "power_type1": {
-        "name": "Channel 1 power type"
+        "name": "Channel 1 power state"
       },
       "warn_power1": {
-        "name": "Channel 1 warning power"
+        "name": "Channel 1 warning power threshold"
       },
       "device_state2": {
         "name": "Channel 2 state"
@@ -66,16 +66,16 @@
         "name": "Channel 2 energy today"
       },
       "power_type2": {
-        "name": "Channel 2 power type"
+        "name": "Channel 2 power state"
       },
       "warn_power2": {
-        "name": "Channel 2 warning power"
+        "name": "Channel 2 warning power threshold"
       },
       "all_energy": {
         "name": "Total energy"
       },
       "net_state": {
-        "name": "Network state"
+        "name": "Cloud connection state"
       }
     }
   }
