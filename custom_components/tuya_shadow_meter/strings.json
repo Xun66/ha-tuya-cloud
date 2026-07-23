@@ -3,22 +3,80 @@
     "step": {
       "user": {
         "title": "Tuya Cloud",
-        "description": "Enter the User Code from the Smart Life or Tuya app, then scan the QR code. Sensors may stay unavailable for about the first minute. Open the device page in the Tuya app to trigger faster updates.",
+        "description": "Enter the User Code from the Smart Life or Tuya app. It is usually under Me/Profile > Settings > Account and Security > User Code.\n\n⚠️ Initial sensor values may be unavailable for about one minute. Opening the device page in the Tuya app can trigger faster updates.",
         "data": {
           "user_code": "User Code"
         }
       },
       "scan": {
         "title": "Scan QR Code",
-        "description": "Scan this QR code with the Smart Life or Tuya app, then submit this step. If the QR code expires, submit again to generate a new one."
+        "description": "Use the Smart Life or Tuya app to scan this QR code.\n\nAfter scanning, return here and submit this step.\n\nIf the QR code expires, submit again to generate a new one.",
+        "data": {
+          "qr_code": "Scan with the Smart Life or Tuya app"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnect Tuya Cloud",
+        "description": "Your Tuya login has expired. Confirm the User Code from Me/Profile > Settings > Account and Security > User Code, then scan a new QR code.",
+        "data": {
+          "user_code": "User Code"
+        }
+      },
+      "reauth_scan": {
+        "title": "Scan QR Code",
+        "description": "Use the Smart Life or Tuya app to scan this QR code.\n\nAfter scanning, return here and submit this step.\n\nIf the QR code expires, submit again to generate a new one.",
+        "data": {
+          "qr_code": "Scan with the Smart Life or Tuya app"
+        }
       },
       "init": {
         "title": "Tuya Cloud",
-        "description": "MQ-only. If sensors are initially unavailable, open the device page in the Tuya app to trigger faster updates."
+        "description": "MQ-only. Initial sensor values may be unavailable for about one minute. Opening the device page in the Tuya app can trigger faster updates."
       }
     },
     "error": {
       "login_error": "Tuya QR login failed: {msg} ({code})"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tuya Cloud Options",
+        "description": "Choose what to configure.",
+        "data": {
+          "action": "Action"
+        }
+      },
+      "devices": {
+        "title": "Tuya Cloud Devices",
+        "description": "Choose which supported Tuya devices this integration should load.",
+        "data": {
+          "device_ids": "Enabled devices"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-scan Authorization",
+        "description": "Confirm the User Code from Me/Profile > Settings > Account and Security > User Code, then scan a new QR code.",
+        "data": {
+          "user_code": "User Code"
+        }
+      },
+      "reauth_scan": {
+        "title": "Scan QR Code",
+        "description": "Use the Smart Life or Tuya app to scan this QR code.\n\nAfter scanning, return here and submit this step.\n\nIf the QR code expires, submit again to generate a new one.",
+        "data": {
+          "qr_code": "Scan with the Smart Life or Tuya app"
+        }
+      }
+    },
+    "error": {
+      "login_error": "Tuya QR login failed: {msg} ({code})",
+      "no_devices_selected": "Select at least one device."
+    },
+    "abort": {
+      "no_more_devices": "No more device can be added.",
+      "no_supported_devices": "No more device can be added.",
+      "wrong_account": "The scanned Tuya account does not match this integration entry."
     }
   },
   "entity": {

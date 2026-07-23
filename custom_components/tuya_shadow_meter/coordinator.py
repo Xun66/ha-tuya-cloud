@@ -7,7 +7,7 @@ import logging
 from typing import Any
 
 from tuya_sharing import Manager, SharingDeviceListener
-from tuya_sharing.customerapi import SharingTokenListener
+from tuya_sharing.customerapi import ApiRequestException, SharingTokenListener
 from tuya_sharing.device import CustomerDevice
 
 from homeassistant.config_entries import ConfigEntry
@@ -15,6 +15,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    CONF_DEVICE_IDS,
     CONF_ENDPOINT,
     CONF_TERMINAL_ID,
     CONF_TOKEN_INFO,
@@ -28,6 +29,32 @@ from .device_profiles import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+AUTH_ERROR_CODES = {
+    "-9999999",
+    "1010",
+    "1011",
+    "1012",
+    "1013",
+    "1014",
+    "1015",
+    "1016",
+    "1106",
+    "2406",
+}
+AUTH_ERROR_WORDS = (
+    "auth",
+    "invalid sign",
+    "login",
+    "permission",
+    "sign invalid",
+    "token",
+    "unauthorized",
+)
+
+
+class TuyaCloudAuthError(Exception):
+    """Raised when Tuya sharing credentials need reauthentication."""
 
 
 @dataclass(frozen=True)
@@ -65,6 +92,10 @@ class TuyaCloudHub(SharingDeviceListener, SharingTokenListener):
         """Remove the hub and expire the Tuya terminal session."""
         await self.hass.async_add_executor_job(self._remove)
 
+    async def async_get_supported_devices(self) -> dict[str, CustomerDevice]:
+        """Return supported devices visible to this Tuya account."""
+        return await self.hass.async_add_executor_job(self._get_supported_devices)
+
     def update_token(self, token_info: dict[str, Any]) -> None:
         """Persist refreshed Tuya sharing tokens."""
         self.hass.loop.call_soon_threadsafe(self._async_update_token, token_info)
@@ -87,6 +118,10 @@ class TuyaCloudHub(SharingDeviceListener, SharingTokenListener):
     def add_device(self, device: CustomerDevice) -> None:
         """Receive a newly bound device event from Tuya sharing MQTT."""
         if not self._is_supported_device(device):
+            return
+        if CONF_DEVICE_IDS not in self.entry.options:
+            return
+        if not self._is_enabled_device(device.id):
             return
 
         setattr(device, "set_up", True)
@@ -112,10 +147,19 @@ class TuyaCloudHub(SharingDeviceListener, SharingTokenListener):
             token_info,
             self,
         )
-        self.manager.update_device_cache()
+        try:
+            self.manager.update_device_cache()
+        except ApiRequestException as err:
+            if _is_auth_error(err):
+                raise TuyaCloudAuthError(err.error_message) from err
+            raise UpdateFailed(
+                f"Failed to load Tuya devices: {err.error_message}"
+            ) from err
 
         for device in self.manager.device_map.values():
             if not self._is_supported_device(device):
+                continue
+            if not self._is_enabled_device(device.id):
                 continue
             setattr(device, "set_up", True)
             self.devices[device.id] = device
@@ -146,6 +190,23 @@ class TuyaCloudHub(SharingDeviceListener, SharingTokenListener):
         self._stop_mq()
         if manager is not None:
             manager.unload()
+
+    def _get_supported_devices(self) -> dict[str, CustomerDevice]:
+        """Refresh the Tuya cache and return supported devices."""
+        if self.manager is None:
+            return {}
+
+        try:
+            self.manager.update_device_cache()
+        except ApiRequestException as err:
+            if _is_auth_error(err):
+                raise TuyaCloudAuthError(err.error_message) from err
+            raise
+        return {
+            device.id: device
+            for device in self.manager.device_map.values()
+            if self._is_supported_device(device)
+        }
 
     def _async_update_token(self, token_info: dict[str, Any]) -> None:
         """Update stored token info in Home Assistant."""
@@ -244,6 +305,11 @@ class TuyaCloudHub(SharingDeviceListener, SharingTokenListener):
         if self.coordinator is not None:
             self.coordinator.async_set_updated_data(dict(self.data))
 
+    def _is_enabled_device(self, device_id: str) -> bool:
+        """Return whether a supported device is enabled for this entry."""
+        device_ids = self.entry.options.get(CONF_DEVICE_IDS)
+        return device_ids is None or device_id in device_ids
+
     @staticmethod
     def _is_supported_device(device: CustomerDevice) -> bool:
         """Return whether the Tuya device matches a supported profile."""
@@ -271,3 +337,13 @@ class TuyaCloudCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
     async def _async_update_data(self) -> dict[str, dict[str, Any]]:
         """Return the latest in-memory device data."""
         return dict(self.hub.data)
+
+
+def _is_auth_error(err: ApiRequestException) -> bool:
+    """Return whether a Tuya API error looks like expired credentials."""
+    error_code = str(err.error_code)
+    if error_code in AUTH_ERROR_CODES:
+        return True
+
+    message = str(err.error_message).lower()
+    return any(word in message for word in AUTH_ERROR_WORDS)
