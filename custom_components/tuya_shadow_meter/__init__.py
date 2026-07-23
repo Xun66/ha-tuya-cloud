@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from .const import CONF_TOKEN_INFO, DOMAIN, PLATFORMS
-from .coordinator import TuyaCloudCoordinator, TuyaCloudHub
+from .coordinator import TuyaCloudAuthError, TuyaCloudCoordinator, TuyaCloudHub
 
 
 async def async_setup_entry(
@@ -20,7 +20,10 @@ async def async_setup_entry(
     hass.data.setdefault(DOMAIN, {})
     hub = TuyaCloudHub(hass, entry)
     coordinator = TuyaCloudCoordinator(hass, hub)
-    await coordinator.async_start()
+    try:
+        await coordinator.async_start()
+    except TuyaCloudAuthError as err:
+        raise ConfigEntryAuthFailed(str(err)) from err
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 

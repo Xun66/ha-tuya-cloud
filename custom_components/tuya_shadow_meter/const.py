@@ -8,6 +8,7 @@ DOMAIN = "tuya_shadow_meter"
 PLATFORMS = [Platform.SENSOR]
 
 CONF_ENDPOINT = "endpoint"
+CONF_DEVICE_IDS = "device_ids"
 CONF_TERMINAL_ID = "terminal_id"
 CONF_TOKEN_INFO = "token_info"
 CONF_USER_CODE = "user_code"

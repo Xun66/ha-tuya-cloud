@@ -3,22 +3,80 @@
     "step": {
       "user": {
         "title": "Tuya Cloud",
-        "description": "输入 Smart Life 或涂鸦 App 里的 User Code，然后扫码。传感器初始可能约 1 分钟不可用。打开涂鸦 App 中的设备页面可触发更快更新。",
+        "description": "输入 Smart Life 或涂鸦 App 里的 User Code。通常在 我的/个人资料 > 设置 > 账号与安全 > User Code。\n\n⚠️ 传感器初始可能约 1 分钟不可用。打开涂鸦 App 中的设备页面可触发更快更新。",
         "data": {
           "user_code": "User Code"
         }
       },
       "scan": {
         "title": "扫描二维码",
-        "description": "用 Smart Life 或涂鸦 App 扫描此二维码，然后提交本步骤。如果二维码过期，再提交一次会生成新的二维码。"
+        "description": "用 Smart Life 或涂鸦 App 扫描此二维码。\n\n扫码后回到这里提交本步骤。\n\n如果二维码过期，再提交一次会生成新的二维码。",
+        "data": {
+          "qr_code": "使用 Smart Life 或涂鸦 App 扫描"
+        }
+      },
+      "reauth_confirm": {
+        "title": "重新连接 Tuya Cloud",
+        "description": "涂鸦登录已失效。确认 User Code，通常在 我的/个人资料 > 设置 > 账号与安全 > User Code，然后重新扫码。",
+        "data": {
+          "user_code": "User Code"
+        }
+      },
+      "reauth_scan": {
+        "title": "扫描二维码",
+        "description": "用 Smart Life 或涂鸦 App 扫描此二维码。\n\n扫码后回到这里提交本步骤。\n\n如果二维码过期，再提交一次会生成新的二维码。",
+        "data": {
+          "qr_code": "使用 Smart Life 或涂鸦 App 扫描"
+        }
       },
       "init": {
         "title": "Tuya Cloud",
-        "description": "只走 MQ。若传感器初始不可用，请打开涂鸦 App 中的设备页面触发更快更新。"
+        "description": "只走 MQ。传感器初始可能约 1 分钟不可用。打开涂鸦 App 中的设备页面可触发更快更新。"
       }
     },
     "error": {
       "login_error": "涂鸦扫码登录失败：{msg}（{code}）"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Tuya Cloud 选项",
+        "description": "选择要配置的内容。",
+        "data": {
+          "action": "操作"
+        }
+      },
+      "devices": {
+        "title": "Tuya Cloud 设备",
+        "description": "选择这个集成要加载的受支持涂鸦设备。",
+        "data": {
+          "device_ids": "启用的设备"
+        }
+      },
+      "reauth_confirm": {
+        "title": "重新扫码授权",
+        "description": "确认 User Code，通常在 我的/个人资料 > 设置 > 账号与安全 > User Code，然后重新扫描二维码。",
+        "data": {
+          "user_code": "User Code"
+        }
+      },
+      "reauth_scan": {
+        "title": "扫描二维码",
+        "description": "用 Smart Life 或涂鸦 App 扫描此二维码。\n\n扫码后回到这里提交本步骤。\n\n如果二维码过期，再提交一次会生成新的二维码。",
+        "data": {
+          "qr_code": "使用 Smart Life 或涂鸦 App 扫描"
+        }
+      }
+    },
+    "error": {
+      "login_error": "涂鸦扫码登录失败：{msg}（{code}）",
+      "no_devices_selected": "至少选择一个设备。"
+    },
+    "abort": {
+      "no_more_devices": "没有更多设备可以添加。",
+      "no_supported_devices": "没有更多设备可以添加。",
+      "wrong_account": "扫码的涂鸦账号与此集成实例不匹配。"
     }
   },
   "entity": {
